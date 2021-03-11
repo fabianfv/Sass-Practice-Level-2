@@ -1,0 +1,110 @@
+@import url("https://fonts.googleapis.com/css?family=Lato:300&display=swap");
+
+/* general */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 10px 0 0 0;
+}
+
+h1 {
+  font-size: 3.5vw;
+  font-weight: 300;
+  color: white;
+  font-family: "Lato";
+}
+
+@mixin flex-item($direction: row, $justify: center, $align: center) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+.strips {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  @include flex-item;
+  cursor: pointer;
+
+  .strip {
+    position: relative;
+    width: 19.9vw;
+    margin: 0.1vw;
+    height: 100vh;
+    overflow: hidden;
+    @include flex-item;
+
+    @mixin strip-content($stripNum, $bgColor, $duration) {
+      &:nth-child(#{$stripNum}) .strip_content {
+        background-color: $bgColor;
+        animation-name: strip-#{$stripNum};
+        animation-duration: $duration;
+        animation-timing-function: ease-out;
+      }
+    }
+
+    $values:
+      1 #244f75 0.5s,
+      2 #60bfbf 0.8s,
+      3 #8c4b7e 0.7s,
+      4 #f8bb44 1s,
+      5 #f24b4b 1.1s;
+
+    @each $num, $bgColor, $duration in $values {
+      @include strip-content($num, $bgColor, $duration);
+    }
+    
+  }
+
+  .strip_content {
+    @include flex-item;
+    position: absolute;
+    height: 100vh;
+    width: 100%;
+    text-align: center;
+
+    :before {
+      content: "";
+      @include flex-item;
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      width: 20vw;
+      height: 100vh;
+      background: white;
+      opacity: 0.05;
+      -webkit-transform-origin: center center;
+      transform-origin: center center;
+      -webkit-transform: skew(30deg) scaleY(1) translate(0, 0);
+      transform: skew(30deg) scaleY(1) translate(0, 0);
+      transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+      overflow: hidden;
+    }
+
+    :hover:before {
+      -webkit-transform: skew(0deg) scaleX(2) translate(0, 0);
+      transform: skew(0deg) scaleX(2) translate(0, 0);
+      opacity: 0.2;
+    }
+  }
+}
+
+@mixin key-frames($stripNum, $x, $y, $z) {
+  @keyframes strip-#{$stripNum} {
+    from {
+      transform: translate3d($x, $y, $z);
+    }
+  }
+}
+
+@include key-frames(1, -100%, 0, 0);
+@include key-frames(2, 0, 100%, 0);
+@include key-frames(3, 0, -100%, 0);
+@include key-frames(4, 0, 100%, 0);
+@include key-frames(5, 100%, 0, 0);
